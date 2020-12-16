@@ -1,0 +1,15 @@
+.base-block {
+    width: 30vw;
+    margin-left: 35vw;
+    margin-right: 35vw;
+    margin-top: 200px;
+    padding: 10px;
+    background-color: rgb(66, 66, 66);
+    border-radius: 15px;
+    text-align: center;
+}
+
+.big-text {
+    color: rgb(240, 240, 240);
+    font-size: 24px;
+}
