@@ -36,6 +36,7 @@ export class SignInComponent implements OnDestroy {
                 .subscribe(
                     (res: ISignInResponse) => {
                         localStorage.setItem('user-token', res.token);
+                        localStorage.setItem('user-email', res.userEmail);
                         this.router.navigateByUrl('/challenge');
                     },
 

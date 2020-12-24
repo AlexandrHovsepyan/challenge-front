@@ -40,6 +40,7 @@ export class SignUpComponent implements OnDestroy {
                 .subscribe(
                     (res: ISignUpResponse) => {
                         localStorage.setItem('user-token', res.token);
+                        localStorage.setItem('user-email', res.userEmail);
                         this.router.navigateByUrl('/challenge');
                     },
                     (err: HttpErrorResponse) => {

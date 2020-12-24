@@ -7,7 +7,7 @@ export class AuthGuard implements CanLoad {
     constructor(private readonly router: Router) { }
 
     canLoad(): boolean {
-        const condition = !localStorage.getItem('user-token');
+        const condition = !localStorage.getItem('user-token') || !localStorage.getItem('user-email');
         if (condition) return true;
 
         this.router.navigateByUrl('/challenge');

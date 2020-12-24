@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   baseUrl: 'http://localhost:3001',
+  socketUrl: 'http://localhost:3001/challenge'
 };
 
 /*
