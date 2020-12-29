@@ -8,10 +8,12 @@ import { SharedModule } from './shared/shared.module';
 
 // components
 import { AppComponent } from './app.component';
+import { NotFoundComponent } from "./not-found/not-found.component";
 
 @NgModule({
     declarations: [
         AppComponent,
+        NotFoundComponent
     ],
     imports: [
         BrowserModule,

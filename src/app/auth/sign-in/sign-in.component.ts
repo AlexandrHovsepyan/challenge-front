@@ -1,11 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import {FormControl, FormGroup, Validator, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ISignInResponse } from '../models/sign-in-response.interface';
 
 import { AuthService } from '../services/auth.service';
+
+import { IAuthResponse } from "../models/auth-responce.interface";
 
 @Component({
   selector: 'app-sign-in',
@@ -34,9 +35,8 @@ export class SignInComponent implements OnDestroy {
             const subscription = this.authService
                 .signIn(this.form.value)
                 .subscribe(
-                    (res: ISignInResponse) => {
+                    (res: IAuthResponse) => {
                         localStorage.setItem('user-token', res.token);
-                        localStorage.setItem('user-email', res.userEmail);
                         this.router.navigateByUrl('/challenge');
                     },
 

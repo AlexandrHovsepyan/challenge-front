@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatTableModule,
         MatTooltipModule,
         HttpClientModule,
+        MatProgressSpinnerModule
     ],
     exports: [
         MatButtonModule,
@@ -32,6 +34,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatTableModule,
         MatTooltipModule,
         HttpClientModule,
+        MatProgressSpinnerModule
     ]
 })
 export class SharedModule { }

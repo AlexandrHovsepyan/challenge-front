@@ -3,9 +3,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ISignUpResponse } from '../models/sign-up-responce.interface';
 
 import { AuthService } from '../services/auth.service';
+
+import { IAuthResponse } from "../models/auth-responce.interface";
 
 @Component({
     selector: 'app-sign-up',
@@ -38,9 +39,8 @@ export class SignUpComponent implements OnDestroy {
             const subscription = this.authService
                 .signUp(this.form.value)
                 .subscribe(
-                    (res: ISignUpResponse) => {
+                    (res: IAuthResponse) => {
                         localStorage.setItem('user-token', res.token);
-                        localStorage.setItem('user-email', res.userEmail);
                         this.router.navigateByUrl('/challenge');
                     },
                     (err: HttpErrorResponse) => {

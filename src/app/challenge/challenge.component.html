@@ -1,1 +1,24 @@
-<h1>challenge</h1>
+<h1 class="page-title">challenge</h1>
+
+<div class="page-spinner" *ngIf="loaderController">
+    <mat-spinner color="accent" diameter="48"></mat-spinner>
+</div>
+
+<ng-container *ngIf="showUsersListResult">
+    <ng-container *ngIf="usersList.length > 0; then userList; else emptyUsersList"></ng-container>
+
+    <ng-template #userList>
+        <div class="list">
+            <ul>
+                <li *ngFor="let user of usersList; let i = index" (click)="onUserSelect(i)">{{user}}</li>
+            </ul>
+        </div>
+    </ng-template>
+
+    <ng-template #emptyUsersList>
+        <div>
+            No online users
+        </div>
+    </ng-template>
+</ng-container>
+
