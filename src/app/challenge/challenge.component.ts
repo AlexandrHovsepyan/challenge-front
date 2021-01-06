@@ -1,7 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
+
 import {SocketEventIn, SocketEventOut} from './enums/socket.enum';
+import {SocketService} from './services/socket.service';
+import {PopupComponent} from './popup/popup.component';
+
+import {filter} from 'rxjs/operators';
+
+
 @Component({
     templateUrl: './challenge.component.html',
     styleUrls: ['./challenge.component.css']
@@ -11,6 +18,7 @@ export class ChallengeComponent implements OnInit, OnDestroy {
     public loaderController = false;
     public showUsersListResult = false;
     public usersList: string[] = [];
+    public selectedUser: string = '';
 
     constructor(private readonly socketService: SocketService, private readonly router: Router, private readonly dialog: MatDialog) { }
 
@@ -20,6 +28,7 @@ export class ChallengeComponent implements OnInit, OnDestroy {
         this.socketService.subscribeToEvent(SocketEventIn.DISCONNECT_USER, this.removeUserFromList);
         this.socketService.subscribeToEvent(SocketEventIn.NEW_CHALLENGE_REQUEST, this.onOffer);
         this.socketService.subscribeToEvent(SocketEventIn.START_GAME, this.gameConfirm);
+        this.socketService.subscribeToEvent(SocketEventIn.CHALLENGE_REQUEST_CANCELED, this.cancelChallengeRequest);
 
         //errors
         this.socketService.subscribeToEvent(SocketEventIn.SERVER_SOCKET_ERROR, this.handleError);
@@ -35,9 +44,12 @@ export class ChallengeComponent implements OnInit, OnDestroy {
         this.socketService.unsubscribeFromEvent(SocketEventIn.DISCONNECT_USER);
         this.socketService.unsubscribeFromEvent(SocketEventIn.NEW_CHALLENGE_REQUEST);
         this.socketService.unsubscribeFromEvent(SocketEventIn.START_GAME);
+        this.socketService.unsubscribeFromEvent(SocketEventIn.CHALLENGE_REQUEST_CANCELED);
 
         //errors
         this.socketService.unsubscribeFromEvent(SocketEventIn.SERVER_SOCKET_ERROR);
+        this.socketService.unsubscribeFromEvent(SocketEventIn.CONNECT_ERROR);
+        this.socketService.unsubscribeFromEvent(SocketEventIn.ERROR);
     }
 
     private addUserList = (list: string[]): void => {
@@ -54,13 +66,27 @@ export class ChallengeComponent implements OnInit, OnDestroy {
 
     private removeUserFromList = (user: string): void => {
         const userIndex = this.usersList.findIndex(userFromList => user === userFromList);
+        if (user === this.selectedUser) {
+            alert(`${user}: logged out!`);
+        }
         this.usersList.splice(userIndex, 1);
+        this.loaderController = false;
+        this.showUsersListResult = true;
+        this.selectedUser = '';
     }
 
     public onUserSelect(index: number): void {
         this.loaderController = true;
         this.showUsersListResult = false;
+        this.selectedUser = this.usersList[index];
         this.socketService.socketEmit(SocketEventOut.CHALLENGE_REQUEST, this.usersList[index]);
+    }
+
+    private cancelChallengeRequest = (user: string): void => {
+        alert(`${user}: canceled your challenge request`);
+        this.loaderController = false;
+        this.showUsersListResult = true;
+        this.selectedUser = '';
     }
 
     public gameConfirm = (questions: Array<{}> ): void => {
@@ -75,12 +101,21 @@ export class ChallengeComponent implements OnInit, OnDestroy {
 
         const dialogRef = this.dialog.open(PopupComponent, data);
 
+        // dialogRef.afterClosed()
+        //     .pipe(
+        //         filter(res => !!res)
+        //     )
+        //     .subscribe((res: string) => {
+        //         this.sendConfirmation(res);
+        //     });
+
         dialogRef.afterClosed()
-            .pipe(
-                filter(res => !!res)
-            )
             .subscribe((res: string) => {
-                this.sendConfirmation(res);
+                if (res) {
+                    return this.sendConfirmation(res);
+                }
+
+                this.sendRequestCancellation(email);
             });
     }
 
@@ -89,12 +124,11 @@ export class ChallengeComponent implements OnInit, OnDestroy {
         // this.gameConfirm(email);
     }
 
+    private sendRequestCancellation(email: string): void {
+        this.socketService.socketEmit(SocketEventOut.CANCEL_CHALLENGE_REQUEST, email);
+    }
+
     private handleError(error: {}): void {
         console.log('handleError', error);
     }
 }
-import {SocketService} from './services/socket.service';
-import {PopupComponent} from './popup/popup.component';
-
-
-import {filter} from 'rxjs/operators';
