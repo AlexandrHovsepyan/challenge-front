@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 
-import { IAuthResponse } from "../models/auth-responce.interface";
+import { IAuthResponse } from '../models/auth-responce.interface';
 
 @Component({
   selector: 'app-sign-in',
@@ -30,23 +30,22 @@ export class SignInComponent implements OnDestroy {
 
     public onSubmit(): void {
         if (this.form.invalid) {
-            this.form.markAllAsTouched();
-        } else {
-            const subscription = this.authService
-                .signIn(this.form.value)
-                .subscribe(
-                    (res: IAuthResponse) => {
-                        localStorage.setItem('user-token', res.token);
-                        this.router.navigateByUrl('/challenge');
-                    },
-
-                    (err: HttpErrorResponse) => {
-                        console.log(err);
-                        const message = err.message;
-                        alert(message);
-                    }
-                );
-            this.subscriptions.add(subscription);
+           return this.form.markAllAsTouched();
         }
+        const subscription = this.authService
+            .signIn(this.form.value)
+            .subscribe(
+                (res: IAuthResponse) => {
+                    localStorage.setItem('user-token', res.token);
+                    this.router.navigateByUrl('/challenge');
+                },
+
+                (err: HttpErrorResponse) => {
+                    console.log(err);
+                    const message = err.message;
+                    alert(message);
+                }
+            );
+        this.subscriptions.add(subscription);
     }
 }
